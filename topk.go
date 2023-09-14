@@ -1,7 +1,8 @@
 package topk
 
 import (
-	"container/heap"
+	"container/heap";
+	"fmt";
 )
 
 // An Item is something we manage in a priority queue.
@@ -32,7 +33,7 @@ func (pq PriorityQueue) Len() int { return pq.n }
 func (pq PriorityQueue) Less(i, j int) bool {
 	// fmt.Printf("Less, i:%d, j:%d, item_array.len:%d, pi:%p, pj:%p", i, j, pq.n, pq.item_array[i], pq.item_array[j])
 	// We want Pop to give us the highest, not lowest, priority so we use greater than here.
-	return pq.item_array[i].priority > pq.item_array[j].priority
+	return pq.item_array[i].priority < pq.item_array[j].priority
 }
 
 func (pq PriorityQueue) Swap(i, j int) {
@@ -64,8 +65,8 @@ func (pq *PriorityQueue) Pop() any {
 }
 
 func (pq *PriorityQueue) Top() *Item {
-	n := pq.n
-	item := pq.item_array[n-1]
+	//n := pq.n
+	item := pq.item_array[0]
 	return item
 }
 
@@ -74,9 +75,8 @@ func (pq *PriorityQueue) TryPush(x any) {
 	if pq.n == pq.capacity {
 		top := pq.Top()
 		if item.priority > top.priority {
-			pq.Pop()
-			pq.Push(item)
-			heap.Fix(pq, pq.n-1)
+			heap.Pop(pq)
+			heap.Push(pq, item)
 		}
 	} else {
 		pq.Push(item)
@@ -98,9 +98,11 @@ type TOPK struct {
 }
 
 func NewTOPK(k int) *TOPK {
-	return &TOPK {
+	ret := &TOPK {
 		pq : NewPriorityQueueForTopK(k),
 	}
+	ret.Init()
+	return ret
 }
 
 func (topk *TOPK) Init() {
@@ -109,4 +111,15 @@ func (topk *TOPK) Init() {
 
 func (topk *TOPK) Add(item *Item) {
 	topk.pq.TryPush(item)
+}
+
+func (topk *TOPK) Add2(value int, priority int) {
+	topk.pq.TryPush(&Item{value:value, priority:priority})
+}
+
+func (topk *TOPK) Dump() {
+	for i:=0; i < topk.pq.n; i++ {
+		item := topk.pq.item_array[i]
+		fmt.Printf("%d: %d\n", item.value, item.priority)
+	}
 }
