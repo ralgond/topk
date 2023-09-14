@@ -111,22 +111,3 @@ func (topk *TOPK) Init() {
 func (topk *TOPK) Add(item *Item) {
 	topk.pq.TryPush(item)
 }
-
-
-func main() {
-	items := map[int]int{
-		1: 1, 2: 2, 4: 4, 5: 5, 6: 6,
-	}
-
-	topk := NewTOPK(3)
-
-	for k,v := range items {
-		item := &Item{value:k, priority:v}
-		topk.Add(item)
-		// fmt.Printf("%d-%d, %p\n", item.value, item.priority, item)
-	}
-
-	for i := 0; i < topk.pq.n; i++ {
-		fmt.Printf("{v:%d, p:%d}\n", topk.pq.item_array[i].value, topk.pq.item_array[i].priority)
-	}
-}
