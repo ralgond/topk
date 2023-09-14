@@ -2,7 +2,6 @@ package topk
 
 import (
 	"container/heap"
-	"fmt"
 )
 
 // An Item is something we manage in a priority queue.
