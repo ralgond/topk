@@ -1,4 +1,4 @@
-package topk
+package main
 
 import (
 	"container/heap"
