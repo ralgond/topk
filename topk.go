@@ -1,14 +1,15 @@
 package topk
 
 import (
-	"container/heap";
-	"fmt";
+	"container/heap"
+	"fmt"
+	"strings"
 )
 
 // An Item is something we manage in a priority queue.
 type Item struct {
 	value    int // The value of the item; arbitrary.
-	priority int    // The priority of the item in the queue.
+	priority int // The priority of the item in the queue.
 	// The index is needed by update and is maintained by the heap.Interface methods.
 	index int // The index of the item in the heap.
 }
@@ -16,15 +17,15 @@ type Item struct {
 // A PriorityQueue implements heap.Interface and holds Items.
 type PriorityQueue struct {
 	item_array []*Item
-	n int
-	capacity int
+	n          int
+	capacity   int
 }
 
 func NewPriorityQueueForTopK(k int) *PriorityQueue {
-	return &PriorityQueue {
+	return &PriorityQueue{
 		item_array: make([]*Item, k),
-		n: 0,
-		capacity: k,
+		n:          0,
+		capacity:   k,
 	}
 }
 
@@ -58,8 +59,8 @@ func (pq *PriorityQueue) Pop() any {
 		return nil
 	}
 	item := pq.item_array[n-1]
-	pq.item_array[n-1] = nil  // avoid memory leak
-	item.index = -1 // for safety
+	pq.item_array[n-1] = nil // avoid memory leak
+	item.index = -1          // for safety
 	pq.n -= 1
 	return item
 }
@@ -98,8 +99,8 @@ type TOPK struct {
 }
 
 func NewTOPK(k int) *TOPK {
-	ret := &TOPK {
-		pq : NewPriorityQueueForTopK(k),
+	ret := &TOPK{
+		pq: NewPriorityQueueForTopK(k),
 	}
 	ret.Init()
 	return ret
@@ -114,12 +115,23 @@ func (topk *TOPK) Add(item *Item) {
 }
 
 func (topk *TOPK) Add2(value int, priority int) {
-	topk.pq.TryPush(&Item{value:value, priority:priority})
+	topk.pq.TryPush(&Item{value: value, priority: priority})
 }
 
 func (topk *TOPK) Dump() {
-	for i:=0; i < topk.pq.n; i++ {
+	for i := 0; i < topk.pq.n; i++ {
 		item := topk.pq.item_array[i]
 		fmt.Printf("%d: %d\n", item.value, item.priority)
 	}
+}
+
+func (topk *TOPK) Dumps() string {
+	var sb strings.Builder
+	for i := 0; i < topk.pq.n; i++ {
+		item := topk.pq.item_array[i]
+		s := fmt.Sprintf("%d:%d", item.value, item.priority)
+		sb.WriteString(s)
+		sb.WriteString(",")
+	}
+	return sb.String()
 }
