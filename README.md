@@ -5,7 +5,10 @@ A data structure for finding the top k elements
 ```go
 package main
 
-import "github.com/ralgond/topk"
+import (
+	"fmt"
+	"github.com/ralgond/topk"
+)
 
 func main() {
 	_topk := topk.NewTOPK(3)
